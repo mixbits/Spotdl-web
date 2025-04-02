@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Spotify Downloader</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { 
+      /* Solid background color - no transparency, image, or vignette */
+      background-color: #a6a083;
+      font-family: Arial, sans-serif;
+      width: 100%;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .bg-primary { background-color: #228B22 !important; } /* forest green header */
+    
+    /* Input field styling */
+    #input-data:focus {
+      border-color: #228B22;
+      box-shadow: 0 0 0 0.25rem rgba(34, 139, 34, 0.25);
+    }
+    
+    /* Clipboard button */
+    #paste-btn {
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+      color: #6c757d;
+      transition: all 0.2s;
+    }
+    
+    #paste-btn:hover {
+      background-color: #e9ecef;
+      color: #228B22;
+    }
+    
+    #paste-btn:active,
+    #paste-btn.active {
+      background-color: #dce0e5;
+      color: #228B22;
+      border-color: #228B22;
+    }
+    
+    /* Form label styling */
+    .form-label {
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    
+    /* Main container styles */
+    .main-container {
+      width: 100%;
+      max-width: 100%;
+      padding: 15px;
+      margin: 30px auto 0;
+    }
+    
+    @media (min-width: 768px) {
+      .main-container {
+        max-width: 90%;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .main-container {
+        max-width: 80%;
+      }
+    }
+    
+    .btn-primary { 
+      background-color: #228B22; 
+      border-color: #228B22; 
+      transition: all 0.3s;
+    }
+    
+    .btn-primary:hover { 
+      background-color: #1e7e1e; 
+      border-color: #1e7e1e;
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary:active,
+    .btn-primary.active {
+      background-color: #207a20 !important;
+      border-color: #207a20 !important;
+      box-shadow: 0 0 0 0.25rem rgba(32, 122, 32, 0.5) !important;
+      transform: translateY(2px);
+    }
+    
+    .progress-bar {
+      transition: width 0.3s ease;
+      background-color: #228B22 !important; /* forest green progress bars */
+    }
+    
+    .progress-label {
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      color: #6c757d;
+    }
+    
+    .status-text {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Make both progress bars the same height */
+    .progress {
+      height: 25px !important;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #f8f9fa;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    /* White Spotify icon */
+    .spotify-icon {
+      color: white;
+    }
+    
+    /* Mobile-specific adjustments */
+    @media (max-width: 767.98px) {
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      
+      .container {
+        padding-left: 5px;
+        padding-right: 5px;
+        max-width: 100%;
+        width: 100%;
+      }
+      
+      .main-container {
+        padding: 8px;
+        margin: 30px 0 0;
+      }
+      
+      .card {
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      
+      .card-body {
+        padding: 1rem;
+      }
+      
+      .card-header {
+        padding: 0.75rem 1rem;
+      }
+      
+      /* Input group adjustments */
+      .input-group {
+        display: flex;
+        width: 100%;
+      }
+      
+      .input-group .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      
+      .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      
+      /* Adjust input field */
+      #input-data {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
+      
+      /* No side margins on rows */
+      .row {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+    
+    /* Update this card-header style in spotdl.html */
+    .card-header {
+      padding: 1rem 1.5rem;
+      border-radius: 3px 3px 0 0 !important; /* Match the card's inner radius at top */
+      border: none; /* Remove any default border */
+      margin: -1px; /* Expand slightly to cover any gap */
+      width: calc(100% + 2px); /* Compensate for the negative margin */
+    }
+    
+    /* Update card-body to match youtubedl.html */
+    .card-body {
+      padding: 1.5rem;
+      border-top: none;
+    }
+    
+    /* Adjust form spacing to match */
+    .mb-3 {
+      margin-bottom: 1.25rem !important;
+    }
+    
+    /* Make input field taller to match */
+    .form-control {
+      min-height: 44px;
+      padding: 0.5rem 0.75rem;
+    }
+    
+    /* Adjust button spacing/sizing */
+    .btn {
+      padding: 0.5rem 1rem;
+      min-height: 44px;
+    }
+    
+    /* Adjustments to match youtubedl.html dimensions exactly */
+    .form-control, #input-data {
+      height: 44px;
+      padding: 10px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    
+    .input-group .btn, #paste-btn {
+      height: 44px;
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+    }
+    
+    #submit-btn {
+      padding: 12px;
+      font-size: 16px;
+      line-height: 1.5;
+      height: auto;
+    }
+    
+    /* Add some additional spacing below the form label */
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Ensure consistent sizing for input container */
+    .input-group {
+      height: 44px;
+    }
+    
+    /* Add specific border radius for all buttons/inputs to match */
+    .btn, .form-control {
+      border-radius: 0.25rem;
+    }
+    
+    .card.shadow {
+      border: 5px solid #1a6b1a; /* Dark green border */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important; /* Stronger shadow */
+      border-radius: 8px; /* Maintain rounded corners with the border */
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0"><i class="fab fa-spotify me-2"></i>Spotify Downloader</h3>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="input-data" class="form-label">Spotify URL:</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="input-data" placeholder="https://open.spotify.com/..." required>
+            <button id="paste-btn" class="btn btn-outline-secondary" type="button" title="Paste from clipboard">
+              <i class="fas fa-clipboard"></i>
+            </button>
+          </div>
+        </div>
+        <button id="submit-btn" class="btn btn-primary w-100">Convert</button>
+        
+        <!-- Main Progress Container -->
+        <div id="progress-container" class="mt-3" style="display:none;">
+          <!-- Status Text -->
+          <div class="status-text" id="status-text">Initializing...</div>
+          
+          <!-- Main Progress Bar -->
+          <div class="progress mb-2">
+            <div id="main-progress-bar" class="progress-bar" 
+                 role="progressbar" style="width: 0%;">0%</div>
+          </div>
+          
+          <!-- Detail Text -->
+          <div class="progress-label" id="progress-detail">Preparing...</div>
+          
+          <!-- File Progress -->
+          <div id="file-progress-container" class="mt-2" style="display:none;">
+            <div class="progress mb-1">
+              <div id="file-progress-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
+            <div class="progress-label" id="file-progress-text">File progress</div>
+          </div>
+        </div>
+        
+        <!-- Error Alert -->
+        <div id="error-alert" class="alert alert-danger mt-3" style="display:none"></div>
+        
+        <!-- Metadata Display -->
+        <div id="metadata-container" class="mt-3" style="display:none;">
+          <div class="row">
+            <!-- Left column for artwork thumbnail -->
+            <div class="col-auto">
+              <img id="meta-artwork" src="" alt="Album Artwork" class="img-fluid" style="max-height: 280px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+            </div>
+            
+            <!-- Right column for title, logs and download button -->
+            <div class="col">
+              <div class="d-flex flex-column" style="height: 280px;">
+                <!-- Title at the top of right column -->
+                <h5 id="meta-title" class="fw-bold mb-2"></h5>
+                
+                <!-- Scrollable logs iframe/div in the middle -->
+                <div class="flex-grow-1 mb-3" style="overflow-y: auto; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.8rem;">
+                  <div id="download-logs">
+                    <!-- Logs will be populated here -->
+                  </div>
+                </div>
+                
+                <!-- Download button at the bottom -->
+                <div>
+                  <button id="download-btn" class="btn btn-success w-100">Download File</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Track active download state
+    let downloadActive = false;
+    let pollInterval;
+    let lastTimestamp = 0;
+    
+    // DOM elements
+    const progressContainer = document.getElementById('progress-container');
+    const mainProgressBar = document.getElementById('main-progress-bar');
+    const progressDetail = document.getElementById('progress-detail');
+    const statusText = document.getElementById('status-text');
+    const fileProgressContainer = document.getElementById('file-progress-container');
+    const fileProgressBar = document.getElementById('file-progress-bar');
+    const fileProgressText = document.getElementById('file-progress-text');
+    const errorAlert = document.getElementById('error-alert');
+    const metadataContainer = document.getElementById('metadata-container');
+    const metaTitle = document.getElementById('meta-title');
+    const metaArtwork = document.getElementById('meta-artwork');
+    const submitBtn = document.getElementById('submit-btn');
+    const inputField = document.getElementById('input-data');
+    
+    // Filter non-critical errors from display
+    function shouldShowError(error) {
+      if (!error) return false;
+      
+      const nonCriticalPatterns = [
+        "Deprecated Feature",
+        "Python version 3.8",
+        "unable to obtain file audio codec with ffprobe",
+        "WARNING: [youtube]",
+        "Signature extraction failed",
+        "Some formats may be missing",
+        "Postprocessing: WARNING"
+      ];
+      
+      for (const pattern of nonCriticalPatterns) {
+        if (error.includes(pattern)) return false;
+      }
+      
+      return true;
+    }
+    
+    // Update UI based on the status
+    function updateStatusUI(status) {
+      switch(status) {
+        case 'starting':
+          statusText.textContent = 'Initializing...';
+          statusText.className = 'status-text text-secondary';
+          break;
+        case 'connecting':
+          statusText.textContent = 'Connecting to Spotify API...';
+          statusText.className = 'status-text text-info';
+          break;
+        case 'fetching':
+          statusText.textContent = 'Fetching metadata...';
+          statusText.className = 'status-text text-info';
+          break;
+        case 'downloading':
+          statusText.textContent = 'Downloading tracks...';
+          statusText.className = 'status-text text-dark'; // Changed from text-primary to text-dark
+          break;
+        case 'packaging':
+          statusText.textContent = 'Creating download package...';
+          statusText.className = 'status-text text-warning';
+          break;
+        case 'complete':
+          statusText.textContent = 'Download complete!';
+          statusText.className = 'status-text text-success';
+          break;
+        case 'error':
+          statusText.textContent = 'Error occurred';
+          statusText.className = 'status-text text-danger';
+          break;
+        default:
+          statusText.textContent = 'Processing...';
+          statusText.className = 'status-text text-secondary';
+      }
+    }
+    
+    // Poll for progress updates
+    function startPolling() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+      
+      pollInterval = setInterval(function() {
+        fetch('/check_progress')
+          .then(response => response.json())
+          .then(data => {
+            if (!downloadActive) return;
+            
+            // Only process if data is newer than what we last saw
+            if (data.timestamp <= lastTimestamp) return;
+            lastTimestamp = data.timestamp;
+            
+            // Update main progress bar
+            const percent = data.overall_percent;
+            mainProgressBar.style.width = `${percent}%`;
+            mainProgressBar.textContent = `${percent}%`;
+            
+            // Update status
+            updateStatusUI(data.status);
+            
+            // Update detail text
+            progressDetail.textContent = data.task_description || 'Processing...';
+            
+            // Update file progress if we're downloading
+            if (data.status === 'downloading' && data.current_file > 0) {
+              fileProgressContainer.style.display = 'block';
+              const filePercent = Math.round(data.current_file_progress * 100);
+              fileProgressBar.style.width = `${filePercent}%`;
+              fileProgressText.textContent = `File ${data.current_file} of ${data.total_files}: ${filePercent}%`;
+            } else if (data.status === 'complete' || data.status === 'packaging') {
+              // When process is complete or packaging, set file progress to 100%
+              if (fileProgressContainer.style.display === 'block') {
+                fileProgressBar.style.width = '100%';
+                fileProgressText.textContent = `File ${data.current_file} of ${data.total_files}: Completed`;
+              }
+            }
+            
+            // Handle errors
+            if (data.error && shouldShowError(data.error)) {
+              errorAlert.textContent = data.error;
+              errorAlert.style.display = 'block';
+            } else {
+              errorAlert.style.display = 'none';
+            }
+          })
+          .catch(error => {
+            console.error('Error polling for progress:', error);
+          });
+      }, 1000); // Poll every second
+    }
+    
+    function stopPolling() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+    }
+    
+    // Add active class handling for mobile touch feedback
+    submitBtn.addEventListener('touchstart', function() {
+      this.classList.add('active');
+    });
+    
+    submitBtn.addEventListener('touchend', function() {
+      this.classList.remove('active');
+    });
+    
+    // Also handle mouse events for desktop
+    submitBtn.addEventListener('mousedown', function() {
+      this.classList.add('active');
+    });
+    
+    submitBtn.addEventListener('mouseup', function() {
+      this.classList.remove('active');
+    });
+    
+    submitBtn.addEventListener('mouseleave', function() {
+      this.classList.remove('active');
+    });
+    
+    // Allow submission by pressing Enter in the URL field
+    inputField.addEventListener('keyup', function(event) {
+      if (event.key === 'Enter') {
+        submitBtn.click();
+      }
+    });
+    
+    // Process button handler
+    submitBtn.addEventListener('click', function() {
+      const inputData = inputField.value.trim();
+      
+      // Reset UI
+      errorAlert.style.display = 'none';
+      metadataContainer.style.display = 'none';
+      
+      // Validate input
+      if (!inputData) {
+        errorAlert.textContent = 'Please enter a Spotify URL';
+        errorAlert.style.display = 'block';
+        return;
+      }
+      
+      // Show progress container
+      downloadActive = true;
+      progressContainer.style.display = 'block';
+      fileProgressContainer.style.display = 'none';
+      mainProgressBar.style.width = '0%';
+      mainProgressBar.textContent = '0%';
+      fileProgressBar.style.width = '0%';
+      
+      // Reset last timestamp
+      lastTimestamp = 0;
+      
+      // Create a FormData object
+      const formData = new FormData();
+      formData.append('spotify_url', inputData);
+      
+      // Start the download process
+      console.log("Submitting download request");
+      fetch('/process', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        console.log("Process response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Process response data:", data);
+        
+        if (data.status === 'processing' && data.download_id) {
+          const downloadId = data.download_id;
+          console.log("Download started with ID:", downloadId);
+          
+          statusText.textContent = 'Download started in background...';
+          
+          // Start checking progress and status
+          startPollingWithId(downloadId);
+          checkDownloadStatus(downloadId);
+        } else {
+          // Handle error
+          downloadActive = false;
+          errorAlert.textContent = data.error || 'Unknown error starting download';
+          errorAlert.style.display = 'block';
+        }
+      })
+      .catch(error => {
+        console.error("Error submitting request:", error);
+        downloadActive = false;
+        errorAlert.textContent = 'Error starting download: ' + error.message;
+        errorAlert.style.display = 'block';
+      });
+    });
+    
+    // Check if mobile and set initial input focus appropriately
+    if (window.innerWidth > 768) {
+      inputField.focus();
+    }
+    
+    // Add clipboard paste functionality
+    const pasteBtn = document.getElementById('paste-btn');
+    pasteBtn.addEventListener('click', async function() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          inputField.value = text;
+          // Add active class for visual feedback
+          this.classList.add('active');
+          setTimeout(() => {
+            this.classList.remove('active');
+          }, 300);
+        }
+      } catch (err) {
+        console.error('Failed to read clipboard: ', err);
+        // Fall back to execCommand for older browsers
+        inputField.focus();
+        const successful = document.execCommand('paste');
+        if (!successful) {
+          alert('Unable to access clipboard. Please paste the URL manually.');
+        }
+      }
+    });
+    
+    // Also add mobile touch feedback for paste button
+    pasteBtn.addEventListener('touchstart', function() {
+      this.classList.add('active');
+    });
+    
+    pasteBtn.addEventListener('touchend', function() {
+      this.classList.remove('active');
+    });
+    
+    // Add these new functions
+    function startPollingWithId(downloadId) {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+      
+      pollInterval = setInterval(function() {
+        fetch(`/check_progress?download_id=${downloadId}`)
+          .then(response => response.json())
+          .then(data => {
+            if (!downloadActive) return;
+            
+            // Only process if data is newer than what we last saw
+            if (data.timestamp <= lastTimestamp) return;
+            lastTimestamp = data.timestamp;
+            
+            // Update main progress bar
+            const percent = data.overall_percent;
+            mainProgressBar.style.width = `${percent}%`;
+            mainProgressBar.textContent = `${percent}%`;
+            
+            // Update status
+            updateStatusUI(data.status);
+            
+            // Update detail text
+            progressDetail.textContent = data.task_description || 'Processing...';
+            
+            // Update file progress if we're downloading
+            if (data.status === 'downloading' && data.current_file > 0) {
+              fileProgressContainer.style.display = 'block';
+              const filePercent = Math.round(data.current_file_progress * 100);
+              fileProgressBar.style.width = `${filePercent}%`;
+              fileProgressText.textContent = `File ${data.current_file} of ${data.total_files}: ${filePercent}%`;
+              
+              // Show failed tracks if any
+              if (data.failed_tracks && data.failed_tracks.length > 0) {
+                const failCount = data.failed_tracks.length;
+                progressDetail.textContent += ` (${failCount} track(s) failed)`;
+              }
+            } else if (data.status === 'complete' || data.status === 'packaging') {
+              // When process is complete or packaging, set file progress to 100%
+              if (fileProgressContainer.style.display === 'block') {
+                fileProgressBar.style.width = '100%';
+                fileProgressText.textContent = `File ${data.current_file} of ${data.total_files}: Completed`;
+              }
+            }
+            
+            // Handle errors
+            if (data.error && shouldShowError(data.error)) {
+              errorAlert.textContent = data.error;
+              errorAlert.style.display = 'block';
+            } else {
+              errorAlert.style.display = 'none';
+            }
+          })
+          .catch(error => {
+            console.error('Error polling for progress:', error);
+          });
+      }, 1000); // Poll every second
+    }
+    
+    function checkDownloadStatus(downloadId) {
+      console.log("Starting status checks for download ID:", downloadId);
+      
+      // Store download ID in a data attribute on the page body for later use
+      document.body.setAttribute('data-download-id', downloadId);
+      
+      const checkInterval = setInterval(function() {
+        fetch(`/download_status?download_id=${downloadId}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log("Download status check received:", data);
+            
+            if (data.status === 'complete' || data.status === 'success') {
+              console.log("DOWNLOAD COMPLETE DETECTED!");
+              
+              // Clear interval and stop polling
+              clearInterval(checkInterval);
+              downloadActive = false;
+              stopPolling();
+              
+              // Call our direct handler function
+              handleDownloadComplete(downloadId);
+            }
+          })
+          .catch(error => {
+            console.error("Error checking status:", error);
+          });
+      }, 2000);
+    }
+    
+    // This script will handle the download completion directly
+    function handleDownloadComplete(downloadId) {
+      console.log("HANDLING DOWNLOAD COMPLETE FOR ID:", downloadId);
+      
+      // Make a direct request to get the download information
+      fetch(`/download_status?download_id=${downloadId}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("FINAL DOWNLOAD DATA:", data);
+          
+          // Hide progress display
+          document.getElementById('progress-container').style.display = 'none';
+          
+          // Set title
+          const titleElem = document.getElementById('meta-title');
+          if (data.type === 'track') {
+            titleElem.textContent = `${data.artist} - ${data.title}`;
+          } else {
+            titleElem.textContent = data.name || "Download Ready";
+          }
+          
+          // Set artwork
+          const artworkElem = document.getElementById('meta-artwork');
+          if (data.artwork) {
+            artworkElem.src = data.artwork;
+            artworkElem.style.display = 'block';
+          } else {
+            artworkElem.style.display = 'none';
+          }
+          
+          // Set download button
+          const downloadBtn = document.getElementById('download-btn');
+          downloadBtn.textContent = "Download File";
+          downloadBtn.onclick = function() {
+            window.location.href = data.download_url;
+            return false;
+          };
+          
+          // Get the progress data for additional details
+          fetch(`/check_progress?download_id=${downloadId}`)
+            .then(response => response.json())
+            .then(progressData => {
+              // Store progress data globally so we can use it in the logs
+              window.progressData = progressData;
+              
+              // Display logs
+              displayDownloadLogs(data);
+              
+              // Show metadata container
+              document.getElementById('metadata-container').style.display = 'block';
+            })
+            .catch(error => {
+              console.error("Error fetching progress data:", error);
+              // Still display basic logs and show the container even if progress data fails
+              displayDownloadLogs(data);
+              document.getElementById('metadata-container').style.display = 'block';
+            });
+        })
+        .catch(error => {
+          console.error("Error fetching final download data:", error);
+        });
+    }
+    
+    // Add this function to display logs in the download logs area
+    function displayDownloadLogs(data) {
+      const logsContainer = document.getElementById('download-logs');
+      logsContainer.innerHTML = ''; // Clear existing logs
+      
+      // Create header for logs
+      const header = document.createElement('div');
+      header.classList.add('mb-2', 'fw-bold');
+      header.textContent = 'Download Details:';
+      logsContainer.appendChild(header);
+      
+      // Add basic info
+      const infoList = document.createElement('ul');
+      infoList.classList.add('ps-3', 'mb-2');
+      
+      // Add type specific info
+      if (data.type === 'track') {
+        infoList.innerHTML = `
+          <li>Type: Single Track</li>
+          <li>Title: ${data.title}</li>
+          <li>Artist: ${data.artist}</li>
+        `;
+      } else {
+        infoList.innerHTML = `
+          <li>Type: ${data.type === 'batch' ? 'Album/Playlist' : data.type}</li>
+          <li>Name: ${data.name}</li>
+        `;
+      }
+      
+      logsContainer.appendChild(infoList);
+      
+      // Check if we have detailed download information from progress data
+      if (window.progressData) {
+        // Add download stats
+        const statsDiv = document.createElement('div');
+        statsDiv.classList.add('mt-2');
+        
+        if (window.progressData.total_files > 1) {
+          statsDiv.innerHTML = `
+            <div class="fw-bold">Download Statistics:</div>
+            <ul class="ps-3">
+              <li>Total tracks: ${window.progressData.total_files}</li>
+              <li>Downloaded: ${window.progressData.current_file}</li>
+            </ul>
+          `;
+          
+          // Add failed tracks if any
+          if (window.progressData.failed_tracks && window.progressData.failed_tracks.length > 0) {
+            const failedList = document.createElement('div');
+            failedList.innerHTML = `
+              <div class="text-danger">Failed Tracks (${window.progressData.failed_tracks.length}):</div>
+              <ul class="ps-3 text-danger">
+                ${window.progressData.failed_tracks.map(track => 
+                  `<li>${track.artist ? track.artist + ' - ' : ''}${track.title}</li>`
+                ).join('')}
+              </ul>
+            `;
+            statsDiv.appendChild(failedList);
+          }
+        }
+        
+        logsContainer.appendChild(statsDiv);
+      }
+      
+      // Add timestamp
+      const timestamp = document.createElement('div');
+      timestamp.classList.add('mt-3', 'text-muted', 'small');
+      timestamp.textContent = `Completed: ${new Date().toLocaleString()}`;
+      logsContainer.appendChild(timestamp);
+    }
+  </script>
+</body>
+</html>
