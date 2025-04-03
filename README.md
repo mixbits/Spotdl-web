@@ -79,8 +79,14 @@ cd /volume/spotdl
 # Start the service
 sudo /usr/local/etc/rc.d/spotdl-service.sh start
 
+# Stop the service
+sudo /usr/local/etc/rc.d/spotdl-service.sh stop
+
 # Check status
 sudo /usr/local/etc/rc.d/spotdl-service.sh status
+
+#Check service logging
+sudo tail -f /var/log/spotdl.log
 ```
 
 ### 8. Access the Web Interface
