@@ -8,7 +8,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     body { 
-      /* Solid background color - no transparency, image, or vignette */
+
       background-color: #a6a083;
       font-family: Arial, sans-serif;
       width: 100%;
@@ -17,15 +17,15 @@
       padding: 0;
     }
     
-    .bg-primary { background-color: #228B22 !important; } /* forest green header */
+    .bg-primary { background-color: #228B22 !important; }
     
-    /* Input field styling */
+  
     #input-data:focus {
       border-color: #228B22;
       box-shadow: 0 0 0 0.25rem rgba(34, 139, 34, 0.25);
     }
     
-    /* Clipboard button */
+
     #paste-btn {
       background-color: #f8f9fa;
       border-color: #ced4da;
@@ -45,13 +45,13 @@
       border-color: #228B22;
     }
     
-    /* Form label styling */
+
     .form-label {
       margin-bottom: 0.5rem;
       font-weight: bold;
     }
     
-    /* Main container styles */
+
     .main-container {
       width: 100%;
       max-width: 100%;
@@ -93,7 +93,7 @@
     
     .progress-bar {
       transition: width 0.3s ease;
-      background-color: #228B22 !important; /* forest green progress bars */
+      background-color: #228B22 !important;
     }
     
     .progress-label {
@@ -107,7 +107,7 @@
       margin-bottom: 0.5rem;
     }
     
-    /* Make both progress bars the same height */
+
     .progress {
       height: 25px !important;
       border-radius: 10px;
@@ -116,12 +116,12 @@
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
     }
     
-    /* White Spotify icon */
+
     .spotify-icon {
       color: white;
     }
     
-    /* Mobile-specific adjustments */
+
     @media (max-width: 767.98px) {
       body {
         padding: 0;
@@ -155,7 +155,7 @@
         padding: 0.75rem 1rem;
       }
       
-      /* Input group adjustments */
+
       .input-group {
         display: flex;
         width: 100%;
@@ -171,53 +171,53 @@
         border-bottom-right-radius: 0;
       }
       
-      /* Adjust input field */
+
       #input-data {
         width: 100%;
         padding: 10px;
-        font-size: 16px; /* Prevents iOS zoom on focus */
+        font-size: 16px;
       }
       
-      /* No side margins on rows */
+
       .row {
         margin-left: 0;
         margin-right: 0;
       }
     }
     
-    /* Update this card-header style in spotdl.html */
+
     .card-header {
       padding: 1rem 1.5rem;
-      border-radius: 3px 3px 0 0 !important; /* Match the card's inner radius at top */
-      border: none; /* Remove any default border */
-      margin: -1px; /* Expand slightly to cover any gap */
-      width: calc(100% + 2px); /* Compensate for the negative margin */
+      border-radius: 3px 3px 0 0 !important;
+      border: none;
+      margin: -1px;
+      width: calc(100% + 2px);
     }
     
-    /* Update card-body to match youtubedl.html */
+
     .card-body {
       padding: 1.5rem;
       border-top: none;
     }
     
-    /* Adjust form spacing to match */
+
     .mb-3 {
       margin-bottom: 1.25rem !important;
     }
     
-    /* Make input field taller to match */
+
     .form-control {
       min-height: 44px;
       padding: 0.5rem 0.75rem;
     }
     
-    /* Adjust button spacing/sizing */
+
     .btn {
       padding: 0.5rem 1rem;
       min-height: 44px;
     }
     
-    /* Adjustments to match youtubedl.html dimensions exactly */
+
     .form-control, #input-data {
       height: 44px;
       padding: 10px;
@@ -238,26 +238,26 @@
       height: auto;
     }
     
-    /* Add some additional spacing below the form label */
+
     .form-label {
       display: block;
       margin-bottom: 0.5rem;
     }
     
-    /* Ensure consistent sizing for input container */
+
     .input-group {
       height: 44px;
     }
     
-    /* Add specific border radius for all buttons/inputs to match */
+
     .btn, .form-control {
       border-radius: 0.25rem;
     }
     
     .card.shadow {
-      border: 5px solid #1a6b1a; /* Dark green border */
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important; /* Stronger shadow */
-      border-radius: 8px; /* Maintain rounded corners with the border */
+      border: 5px solid #1a6b1a;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -397,7 +397,7 @@
           break;
         case 'downloading':
           statusText.textContent = 'Downloading tracks...';
-          statusText.className = 'status-text text-dark'; // Changed from text-primary to text-dark
+          statusText.className = 'status-text text-dark';
           break;
         case 'packaging':
           statusText.textContent = 'Creating download package...';
@@ -479,7 +479,7 @@
       }
     }
     
-    // Add active class handling for mobile touch feedback
+
     submitBtn.addEventListener('touchstart', function() {
       this.classList.add('active');
     });
@@ -488,7 +488,7 @@
       this.classList.remove('active');
     });
     
-    // Also handle mouse events for desktop
+
     submitBtn.addEventListener('mousedown', function() {
       this.classList.add('active');
     });
@@ -501,7 +501,7 @@
       this.classList.remove('active');
     });
     
-    // Allow submission by pressing Enter in the URL field
+
     inputField.addEventListener('keyup', function(event) {
       if (event.key === 'Enter') {
         submitBtn.click();
@@ -578,19 +578,19 @@
       });
     });
     
-    // Check if mobile and set initial input focus appropriately
+
     if (window.innerWidth > 768) {
       inputField.focus();
     }
     
-    // Add clipboard paste functionality
+
     const pasteBtn = document.getElementById('paste-btn');
     pasteBtn.addEventListener('click', async function() {
       try {
         const text = await navigator.clipboard.readText();
         if (text) {
           inputField.value = text;
-          // Add active class for visual feedback
+
           this.classList.add('active');
           setTimeout(() => {
             this.classList.remove('active');
@@ -598,7 +598,7 @@
         }
       } catch (err) {
         console.error('Failed to read clipboard: ', err);
-        // Fall back to execCommand for older browsers
+
         inputField.focus();
         const successful = document.execCommand('paste');
         if (!successful) {
@@ -607,7 +607,7 @@
       }
     });
     
-    // Also add mobile touch feedback for paste button
+
     pasteBtn.addEventListener('touchstart', function() {
       this.classList.add('active');
     });
@@ -616,7 +616,7 @@
       this.classList.remove('active');
     });
     
-    // Add these new functions
+
     function startPollingWithId(downloadId) {
       if (pollInterval) {
         clearInterval(pollInterval);
@@ -628,11 +628,11 @@
           .then(data => {
             if (!downloadActive) return;
             
-            // Only process if data is newer than what we last saw
+
             if (data.timestamp <= lastTimestamp) return;
             lastTimestamp = data.timestamp;
             
-            // Update main progress bar
+
             const percent = data.overall_percent;
             mainProgressBar.style.width = `${percent}%`;
             mainProgressBar.textContent = `${percent}%`;
