@@ -27,7 +27,7 @@ case "$1" in
 
         # Need to get PID from the process since we're using a script
         sleep 5
-        PID=$(ps -ef | grep "flask run --host=0.0.0.0 --port=4567" | grep -v grep | awk '{print $2}')
+        PID=$(ps -ef | grep "flask run --host=0.0.0.0 --port=7667" | grep -v grep | awk '{print $2}')
         if [ -n "$PID" ]; then
             echo $PID > "$PID_FILE"
             echo "Spotify Downloader service started with PID: $PID"
