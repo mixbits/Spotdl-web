@@ -2,7 +2,7 @@
 # You can manually start/stop this service with the commands below:
 # sudo /usr/local/etc/rc.d/spotdl-service.sh [start/stop]
 # Real-time logs can be seen with the ffollowing bash command:
-# tail -f /var/log/youtubedl.log
+# tail -f /var/log/spotdl.log
 #!/bin/sh
 # Configuration
 USER="user"  # Your host username
