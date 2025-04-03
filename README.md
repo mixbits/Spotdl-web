@@ -1,5 +1,5 @@
 # (Spotdl) Spotify Downloader Web App Installation Guide
-Self-hosted web GUI for Spotify URL downloader
+Self-hosted web GUI for spotdl. Spotify URL MP3 downloader
 
 ## Overview
 This web application allows users to download Spotify tracks, albums, and playlists as MP3 files through a browser interface. It uses Flask as the web server, connects to Spotify's API for metadata, and uses yt-dlp to download audio.
