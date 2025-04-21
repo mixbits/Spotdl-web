@@ -103,6 +103,9 @@ http://your_server_ip:7667
 - You need a valid Spotify developer account to get API credentials
 - FFmpeg must be installed for audio conversion
 
+## License
+This project is licensed under the MIT License.​It utilizes spotipy, which is also licensed under the MIT License.​For more details, please refer to the LICENSE.txt file.
+
 ## Screenshots
 
 <img src="screenshots/spotdl-1.png" alt="Screenshot 1" width="500">
